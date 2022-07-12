@@ -31,11 +31,13 @@ type OML_O21 struct {
 			ObservationRequest struct {
 				ObservationRequest OBR `hl7:"OBR" json:"ObservationRequest"`
 				Container          []struct {
-					TestCodeDetail   TCD   `hl7:"TCD,optional" json:"TestCodeDetail"`
-					NotesAndComments []NTE `hl7:"NTE,optional" json:"NotesAndComments"`
-					Diagnosis        []DG1 `hl7:"DG1,optional" json:"Diagnosis"`
+					SpecimenAndContainerDetail SAC   `hl7:"SAC" json:"SpecimenAndContainerDetail"`
+					ObservationResult          []OBX `hl7:"OBX,optional" json:"ObservationResult"`
 				}
-				Observation []struct {
+				TestCodeDetail   TCD   `hl7:"TCD,optional" json:"TestCodeDetail"`
+				NotesAndComments []NTE `hl7:"NTE,optional" json:"NotesAndComments"`
+				Diagnosis        []DG1 `hl7:"DG1,optional" json:"Diagnosis"`
+				Observation      []struct {
 					ObservationResult OBX   `hl7:"OBX" json:"ObservationResult"`
 					TestCodeDetail    TCD   `hl7:"TCD,optional" json:"TestCodeDetail"`
 					NotesAndComments  []NTE `hl7:"NTE,optional" json:"NotesAndComments"`
