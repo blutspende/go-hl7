@@ -154,6 +154,7 @@ func processSegment(recordType string, subDepth int, currentRecord reflect.Value
 				var err error
 				switch field.Index(i).Kind() {
 				case reflect.Int:
+					fallthrough
 				case reflect.String:
 					oneElementStr = field.Index(i).String()
 				case reflect.Struct:
