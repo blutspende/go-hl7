@@ -26,7 +26,7 @@ The following Go code decodes a hl7 read from a File.
 ``` go
 fileData, err := ioutil.ReadFile("tbd.hl7")
 if err != nil {
-  log.Fatal(err)
+    log.Fatal(err)
 }
 
 var message 

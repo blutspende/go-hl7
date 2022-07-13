@@ -26,8 +26,7 @@ type Error string
 
 var EOF = fmt.Errorf("EOF")
 
-func IdentifyMessage(messageData []byte, encoding Encoding) (string, string, error) {
-	var err error
+func IdentifyMessage(messageData []byte, encoding Encoding) (messageType string, protocolVersion string, err error) {
 	var messageBytes []byte
 
 	if messageBytes, err = encodeMessage(messageData, encoding); err != nil {
@@ -50,8 +49,8 @@ func IdentifyMessage(messageData []byte, encoding Encoding) (string, string, err
 		return "", "", fmt.Errorf("expected segment length was %d, current length is '%d'", minSegmentPartCount, len(messageStringParts))
 	}
 
-	messageType := string(messageStringParts[8])
-	protocolVersion := string(messageStringParts[11])
+	messageType = string(messageStringParts[8])
+	protocolVersion = string(messageStringParts[11])
 
 	return messageType, protocolVersion, err
 }
