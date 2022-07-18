@@ -27,5 +27,5 @@ type ORU_R01 struct {
 			ClinicalTrialIdentification []CTI `hl7:"CTI,optional"`
 		}
 	}
-	ContinuationPointer DSC `hl7:"MSH"`
+	ContinuationPointer DSC `hl7:"DSC"`
 }

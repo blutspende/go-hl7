@@ -31,5 +31,5 @@ type ORU_R01 struct {
 			ClinicalTrialIdentification []CTI `hl7:"CTI,optional" json:"ClinicalTrialIdentification,omitempty"`
 		}
 	}
-	ContinuationPointer DSC `hl7:"MSH" json:"ContinuationPointer,omitempty"`
+	ContinuationPointer DSC `hl7:"DSC" json:"ContinuationPointer,omitempty"`
 }
