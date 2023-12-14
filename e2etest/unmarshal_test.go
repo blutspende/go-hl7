@@ -3,11 +3,11 @@ package e2e
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/blutspende/go-hl7"
 	"os"
 	"testing"
 
-	"github.com/DRK-Blutspende-BaWueHe/go-hl7"
-	"github.com/DRK-Blutspende-BaWueHe/go-hl7/lib/hl7v23"
+	"github.com/blutspende/go-hl7/lib/hl7v23"
 	"github.com/stretchr/testify/assert"
 )
 

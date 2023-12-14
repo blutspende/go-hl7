@@ -1,12 +1,12 @@
 package e2e
 
 import (
+	"github.com/blutspende/go-hl7"
 	"testing"
 	"time"
 
-	"github.com/DRK-Blutspende-BaWueHe/go-hl7"
-	"github.com/DRK-Blutspende-BaWueHe/go-hl7/lib/hl7v23"
-	"github.com/DRK-Blutspende-BaWueHe/go-hl7/lib/hl7v24"
+	"github.com/blutspende/go-hl7/lib/hl7v23"
+	"github.com/blutspende/go-hl7/lib/hl7v24"
 	"github.com/stretchr/testify/assert"
 )
 

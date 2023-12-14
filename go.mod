@@ -1,4 +1,4 @@
-module github.com/DRK-Blutspende-BaWueHe/go-hl7
+module github.com/blutspende/go-hl7
 
 go 1.17
 

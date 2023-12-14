@@ -3,7 +3,7 @@
 Golang library for handling hl7 2.x Procotol
 
 ###### Install
-`go get github.com/DRK-Blutspende-BaWueHe/go-hl7`
+`go get github.com/blutspende/go-hl7`
 
 ## Features
   - Encoding
