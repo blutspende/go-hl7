@@ -169,6 +169,9 @@ func processSegment(recordType string, subDepth int, currentRecord reflect.Value
 				}
 				value = value + oneElementStr
 			}
+			if value != "" {
+				isWorthGeneratingThisRecord = true
+			}
 			fieldList = addFieldToOutput(fieldList, fieldIdx, repeatIdx, componentIdx, value)
 		case reflect.Struct:
 			if field.Type().Name() == "Time" { // ToDo: Ambigious Time (time.Time or sthelse.Time ?)
