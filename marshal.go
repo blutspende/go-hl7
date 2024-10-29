@@ -327,7 +327,6 @@ func generateHL7String(recordtype string, fieldList OutputRecords, delimiters De
 		if recordtype == "MSH" {
 			output += delimiters.Composite
 		}
-		output += "\r"
 	}
 
 	return output, true
