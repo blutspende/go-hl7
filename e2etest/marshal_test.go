@@ -1,6 +1,8 @@
 package e2e
 
 import (
+	"github.com/blutspende/bloodlab-common/encoding"
+	"github.com/blutspende/bloodlab-common/timezone"
 	"github.com/blutspende/go-hl7"
 	"testing"
 	"time"
@@ -19,16 +21,16 @@ func TestMarshalMSH(t *testing.T) {
 	err = hl7.Unmarshal(
 		[]byte(filedata),
 		&message,
-		hl7.EncodingUTF8,
-		hl7.TimezoneEuropeBerlin)
+		encoding.UTF8,
+		timezone.EuropeBerlin)
 
 	// Act
 	var marshalledMessageBytes [][]byte
 	marshalledMessageBytes, err = hl7.Marshal(
 		message,
 		hl7.StandardFieldSeparator,
-		hl7.EncodingASCII,
-		hl7.TimezoneEuropeBerlin,
+		encoding.ASCII,
+		timezone.EuropeBerlin,
 		hl7.StandardNotation)
 
 	// Assert
@@ -108,8 +110,8 @@ func TestMarshalFromStruct(t *testing.T) {
 	marshalledMessageBytes, err := hl7.Marshal(
 		trigger,
 		hl7.StandardFieldSeparator,
-		hl7.EncodingASCII,
-		hl7.TimezoneUTC,
+		encoding.ASCII,
+		timezone.UTC,
 		hl7.StandardNotation)
 	assert.Nil(t, err)
 	assert.Equal(t, mshData, string(marshalledMessageBytes[0]))
@@ -126,15 +128,15 @@ func TestMarshalPID(t *testing.T) {
 	err := hl7.Unmarshal(
 		[]byte(filedata),
 		&message,
-		hl7.EncodingUTF8,
-		hl7.TimezoneEuropeBerlin)
+		encoding.UTF8,
+		timezone.EuropeBerlin)
 
 	// Act
 	marshalledMessageBytes, err := hl7.Marshal(
 		message,
 		hl7.StandardFieldSeparator,
-		hl7.EncodingASCII,
-		hl7.TimezoneEuropeBerlin,
+		encoding.ASCII,
+		timezone.EuropeBerlin,
 		hl7.StandardNotation)
 
 	// Assert

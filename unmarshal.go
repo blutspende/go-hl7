@@ -1,15 +1,14 @@
 package hl7
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
+	"github.com/blutspende/bloodlab-common/encoding"
+	"github.com/blutspende/bloodlab-common/timezone"
 	"reflect"
 	"strconv"
 	"strings"
 	"time"
-
-	"golang.org/x/text/encoding/charmap"
 )
 
 // HL7 Format delimiters
@@ -26,85 +25,44 @@ type Error string
 
 var EOF = fmt.Errorf("EOF")
 
-func IdentifyMessage(messageData []byte, encoding Encoding) (string, string, error) {
-	var err error
-	var messageBytes []byte
-
-	if messageBytes, err = encodeMessage(messageData, encoding); err != nil {
+func IdentifyMessage(messageData []byte, enc encoding.Encoding) (string, string, error) {
+	message, err := encoding.ConvertFromEncodingToUtf8(messageData, enc)
+	if err != nil {
 		return "", "", err
 	}
-	messageString := string(messageBytes)
 
-	if len(messageString) < 4 {
-		return "", "", fmt.Errorf("invalid messageData='%s'", messageString)
+	if len(message) < 4 {
+		return "", "", fmt.Errorf("invalid messageData='%s'", message)
 	}
 
-	if !strings.HasPrefix(messageString, "MSH") {
-		return "", "", fmt.Errorf("expected segment was MSH current segment is '%s'", messageString[0:3])
+	if !strings.HasPrefix(message, "MSH") {
+		return "", "", fmt.Errorf("expected segment was MSH current segment is '%s'", message[0:3])
 	}
-	separator := string(messageString[3])
+	separator := string(message[3])
 
 	minSegmentPartCount := 12
-	messageStringParts := strings.Split(messageString, separator)
-	if len(messageStringParts) < minSegmentPartCount {
-		return "", "", fmt.Errorf("expected segment length was %d, current length is '%d'", minSegmentPartCount, len(messageStringParts))
+	messageParts := strings.Split(message, separator)
+	if len(messageParts) < minSegmentPartCount {
+		return "", "", fmt.Errorf("expected segment length was %d, current length is '%d'", minSegmentPartCount, len(messageParts))
 	}
 
-	messageType := string(messageStringParts[8])
-	protocolVersion := string(messageStringParts[11])
+	messageType := messageParts[8]
+	protocolVersion := messageParts[11]
 
 	return messageType, protocolVersion, err
 }
 
-func encodeMessage(messageData []byte, enc Encoding) ([]byte, error) {
-	var messageBytes []byte
-	var err error
+func Unmarshal(messageData []byte, targetStruct interface{}, enc encoding.Encoding, tz timezone.TimeZone) error {
 
-	switch enc {
-	case EncodingUTF8:
-		return messageData, nil
-	case EncodingASCII:
-		return messageData, nil
-	case EncodingDOS866:
-		messageBytes, err = EncodeCharsetToUTF8From(charmap.CodePage866, messageData)
-		return messageBytes, err
-	case EncodingDOS855:
-		messageBytes, err = EncodeCharsetToUTF8From(charmap.CodePage855, messageData)
-		return messageBytes, err
-	case EncodingDOS852:
-		messageBytes, err = EncodeCharsetToUTF8From(charmap.CodePage852, messageData)
-		return messageBytes, err
-	case EncodingWindows1250:
-		messageBytes, err = EncodeCharsetToUTF8From(charmap.Windows1250, messageData)
-		return messageBytes, err
-	case EncodingWindows1251:
-		messageBytes, err = EncodeCharsetToUTF8From(charmap.Windows1251, messageData)
-		return messageBytes, err
-	case EncodingWindows1252:
-		messageBytes, err = EncodeCharsetToUTF8From(charmap.Windows1252, messageData)
-		return messageBytes, err
-	case EncodingISO8859_1:
-		messageBytes, err = EncodeCharsetToUTF8From(charmap.ISO8859_1, messageData)
-		return messageBytes, err
-	}
-
-	return []byte{}, fmt.Errorf("invalid Codepage Id='%d' - %w", enc, err)
-}
-
-func Unmarshal(messageData []byte, targetStruct interface{}, enc Encoding, tz Timezone) error {
-	var (
-		messageBytes []byte
-		err          error
-	)
-
-	if messageBytes, err = encodeMessage(messageData, enc); err != nil {
+	message, err := encoding.ConvertFromEncodingToUtf8(messageData, enc)
+	if err != nil {
 		return err
 	}
 
 	// first try to break by 0x0a (non-standard, but used sometimes)
-	bufferedInputLinesWithBlanks := strings.Split(string(messageBytes), string([]byte{0x0A}))
+	bufferedInputLinesWithBlanks := strings.Split(message, string([]byte{0x0A}))
 	if len(bufferedInputLinesWithBlanks) <= 1 { // if it was not possible to break with non-standard 0x0a line-break try 0d (standard)
-		bufferedInputLinesWithBlanks = strings.Split(string(messageBytes), string([]byte{0x0D}))
+		bufferedInputLinesWithBlanks = strings.Split(message, string([]byte{0x0D}))
 	}
 	bufferedInputLines := make([]string, 0)
 	for _, x := range bufferedInputLinesWithBlanks {
@@ -153,17 +111,6 @@ func Unmarshal(messageData []byte, targetStruct interface{}, enc Encoding, tz Ti
 	return nil
 }
 
-func EncodeCharsetToUTF8From(charmap *charmap.Charmap, data []byte) ([]byte, error) {
-	sr := bytes.NewReader(data)
-	e := charmap.NewDecoder().Reader(sr)
-	bytes := make([]byte, len(data)*2)
-	n, err := e.Read(bytes)
-	if err != nil {
-		return []byte{}, err
-	}
-	return bytes[:n], nil
-}
-
 type RETV int
 
 const (
@@ -175,7 +122,7 @@ const (
 // HL7 delimimters (default, rewritten at startup)
 // https://blog.interfaceware.com/hl7-delimiter-redefinitions/
 // This function takes a string and a struct and matches the annotated fields to the string-input
-func ParseStruct(bufferedInputLines []string, depth int, currentInputLine int, targetStruct interface{}, enc Encoding, tz Timezone, delimiters Delimiters) (int, RETV, error) {
+func ParseStruct(bufferedInputLines []string, depth int, currentInputLine int, targetStruct interface{}, enc encoding.Encoding, tz timezone.TimeZone, delimiters Delimiters) (int, RETV, error) {
 
 	hasMatchedAtLeastOneRecord := false
 

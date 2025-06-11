@@ -3,6 +3,8 @@ package e2e
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/blutspende/bloodlab-common/encoding"
+	"github.com/blutspende/bloodlab-common/timezone"
 	"github.com/blutspende/go-hl7"
 	"os"
 	"testing"
@@ -16,7 +18,7 @@ func TestMessageIdentification(t *testing.T) {
 
 	messageType, protocolVersion, err := hl7.IdentifyMessage(
 		[]byte(data),
-		hl7.EncodingUTF8,
+		encoding.UTF8,
 	)
 
 	assert.Nil(t, err)
@@ -32,8 +34,8 @@ func Test_Parse_MSH_Segment(t *testing.T) {
 	err := hl7.Unmarshal(
 		[]byte(fileData),
 		&message,
-		hl7.EncodingUTF8,
-		hl7.TimezoneEuropeBerlin)
+		encoding.UTF8,
+		timezone.EuropeBerlin)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, message.MSH)
@@ -74,8 +76,8 @@ func Test_Order_ORM_generic1(t *testing.T) {
 	err := hl7.Unmarshal(
 		[]byte(filedata),
 		&message,
-		hl7.EncodingUTF8,
-		hl7.TimezoneEuropeBerlin)
+		encoding.UTF8,
+		timezone.EuropeBerlin)
 
 	assert.Nil(t, err)
 
@@ -150,7 +152,7 @@ func TestMSH(t *testing.T) {
 	sample += `ORC|NW||23071014||||||20230203080800|||BSD|` + "\r"
 	sample += `OBR|||23071014|HBNAET^HBV PCR mit erhöhter Sensitivität|||20230203080900|||||||||BSD|||||||||P|` + "\r"
 	dest := hl7v23.ORM_O01{}
-	err := hl7.Unmarshal([]byte(sample), &dest, hl7.EncodingUTF8, hl7.TimezoneEuropeBerlin)
+	err := hl7.Unmarshal([]byte(sample), &dest, encoding.UTF8, timezone.EuropeBerlin)
 	out, _ := json.MarshalIndent(dest, "", "\t")
 	assert.Nil(t, err)
 	file, err := os.Create("testMSH.json")

@@ -6,17 +6,8 @@ Golang library for handling hl7 2.x Procotol
 `go get github.com/blutspende/go-hl7`
 
 ## Features
-  - Encoding
-    - UTF8
-    - ASCII
-    - Windows1250
-    - Windows1251
-    - Windows1252
-    - DOS852
-    - DOS855
-    - DOS866
-    - ISO8859_1
-  - Timezone Support
+  - Encoding - supports all encodings defined in [bloodlab-common encoding package](https://github.com/blutspende/bloodlab-common/blob/v1.0.0/encoding/encoding.go)
+  - Timezone Support - supports all timezones defined in [bloodlab-common timezone package](https://github.com/blutspende/bloodlab-common/blob/v1.0.0/timezone/timezone.go)
   - Marshal/Unmarshal function
 
 ## Quick Start
@@ -33,8 +24,8 @@ var message
 err := hl7.Unmarshal(
     []byte(filedata),
     &message,
-    hl7.EncodingUTF8,
-    hl7.TimezoneEuropeBerlin)
+    encoding.UTF8,
+    timezone.EuropeBerlin)
 
 if err != nil {
    log.Fatal(err)
@@ -47,8 +38,8 @@ The following Go code encodes a hl7 message.
 marshalledMessageBytes, err := hl7.Marshal(
     message,
     hl7.StandardFieldSeparator,
-    hl7.EncodingASCII,
-    hl7.TimezoneEuropeBerlin,
+    encoding.ASCII,
+    timezone.EuropeBerlin,
     hl7.StandardNotation)
 
 if err != nil {
@@ -62,7 +53,7 @@ To identify the version and type of the message, you can use the IdentifyMessage
 var data string
 messageType, protocolVersion, err := hl7.IdentifyMessage(
     []byte(data),
-    hl7.EncodingUTF8,
+    encoding.UTF8,
 )
 ```
 
