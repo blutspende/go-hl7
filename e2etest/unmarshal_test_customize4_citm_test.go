@@ -1,6 +1,8 @@
 package e2e
 
 import (
+	"github.com/blutspende/bloodlab-common/encoding"
+	"github.com/blutspende/bloodlab-common/timezone"
 	"github.com/blutspende/go-hl7"
 	"testing"
 	"time"
@@ -33,8 +35,8 @@ func Test_cITm_Result1(t *testing.T) {
 	err := hl7.Unmarshal(
 		[]byte(filedata),
 		&message,
-		hl7.EncodingUTF8,
-		hl7.TimezoneEuropeBerlin)
+		encoding.UTF8,
+		timezone.EuropeBerlin)
 
 	assert.Nil(t, err)
 	assert.Equal(t, 1, len(message.PatientResult))
@@ -62,8 +64,8 @@ func TestCit_OUL_R21(t *testing.T) {
 	err := hl7.Unmarshal(
 		[]byte(filedata),
 		&message,
-		hl7.EncodingUTF8,
-		hl7.TimezoneEuropeBerlin)
+		encoding.UTF8,
+		timezone.EuropeBerlin)
 
 	// SAC
 	assert.Nil(t, err)

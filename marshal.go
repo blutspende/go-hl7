@@ -2,6 +2,8 @@ package hl7
 
 import (
 	"fmt"
+	"github.com/blutspende/bloodlab-common/encoding"
+	"github.com/blutspende/bloodlab-common/timezone"
 	"reflect"
 	"sort"
 	"strings"
@@ -9,7 +11,7 @@ import (
 )
 
 // Marshal - wrap datastructure to code
-func Marshal(message interface{}, fieldSeparator FieldSeparator, enc Encoding, tz Timezone, notation Notation) ([][]byte, error) {
+func Marshal(message interface{}, fieldSeparator FieldSeparator, enc encoding.Encoding, tz timezone.TimeZone, notation Notation) ([][]byte, error) {
 	location, err := time.LoadLocation(string(tz))
 	if err != nil {
 		return [][]byte{}, err
@@ -34,7 +36,7 @@ type OutputRecord struct {
 
 type OutputRecords []OutputRecord
 
-func processStruct(message interface{}, depth int, enc Encoding, location *time.Location, notation Notation, delimiters Delimiters) ([][]byte, error) {
+func processStruct(message interface{}, depth int, enc encoding.Encoding, location *time.Location, notation Notation, delimiters Delimiters) ([][]byte, error) {
 	buffer := make([][]byte, 0)
 	messageValue := reflect.ValueOf(message)
 	messageType := reflect.TypeOf(message)
