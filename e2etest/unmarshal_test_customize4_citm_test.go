@@ -3,12 +3,12 @@ package e2e
 import (
 	"github.com/blutspende/bloodlab-common/encoding"
 	"github.com/blutspende/bloodlab-common/timezone"
-	"github.com/blutspende/go-hl7"
+	"github.com/blutspende/go-hl7/v2"
 	"testing"
 	"time"
 
-	"github.com/blutspende/go-hl7/lib/hl7v23"
-	"github.com/blutspende/go-hl7/lib/hl7v24"
+	"github.com/blutspende/go-hl7/v2/lib/hl7v23"
+	"github.com/blutspende/go-hl7/v2/lib/hl7v24"
 	"github.com/stretchr/testify/assert"
 )
 
