@@ -1,4 +1,4 @@
-module github.com/blutspende/go-hl7
+module github.com/blutspende/go-hl7/v2
 
 go 1.24.2
 
